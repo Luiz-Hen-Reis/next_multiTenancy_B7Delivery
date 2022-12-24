@@ -1,27 +1,32 @@
 import { useState } from "react";
 import styles from "./styles.module.css";
+import SearchIcon from "./searchIcon.svg";
+import { useAppContext } from "../../contexts/AppContext";
 
 type Props = {
-  mainColor: string;
   onSearch: (searchValue: string) => void;
 };
 
-const SearchInput = ({ mainColor, onSearch }: Props) => {
-  const [focused, setFocused] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
+const SearchInput = ({ onSearch }: Props) => {
+  const { tenant } = useAppContext();
 
-    const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if(e.code === 'Enter') {
-            onSearch(searchValue);
-        }
+  const [focused, setFocused] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+
+  const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.code === "Enter") {
+      onSearch(searchValue);
     }
+  };
 
   return (
     <div
       className={styles.container}
-      style={{ borderColor: focused ? mainColor : "#fff" }}
+      style={{ borderColor: focused ? tenant?.mainColor : "#fff" }}
     >
-      <div className={styles.button} onClick={() => onSearch(searchValue)}></div>
+      <div className={styles.button} onClick={() => onSearch(searchValue)}>
+        <SearchIcon color={tenant?.mainColor} />
+      </div>
       <input
         type="text"
         placeholder="Digite o nome do produto"
@@ -30,7 +35,7 @@ const SearchInput = ({ mainColor, onSearch }: Props) => {
         onBlur={() => setFocused(false)}
         onKeyUp={handleKeyUp}
         value={searchValue}
-        onChange={e => setSearchValue(e.target.value)}
+        onChange={(e) => setSearchValue(e.target.value)}
       />
     </div>
   );
