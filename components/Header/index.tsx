@@ -7,18 +7,19 @@ type Props = {
   color: string;
   title?: string;
   subTitle?: string;
+  invert?: boolean;
 };
 
-const Header = ({ backHref, color, title, subTitle }: Props) => {
+const Header = ({ backHref, color, title, subTitle, invert }: Props) => {
   return (
     <div className={styles.container}>
       <div className={styles.leftSide}>
-        <Link href={backHref}>
-          <BackIcon color={color} />
+        <Link href={backHref} className={invert ? styles.buttonTransparent : ''}>
+          <BackIcon color={invert ? '#FFF' : color} />
         </Link>
       </div>
       <div className={styles.center}>
-        {title && <div className={styles.title}>{title}</div>}
+        {title && <div style={{ color: invert ? '#FFF' : '#1B1B1B' }} className={styles.title}>{title}</div>}
         {subTitle && <div className={styles.subTitle}>{subTitle}</div>}
       </div>
       <div className={styles.rightSide}></div>

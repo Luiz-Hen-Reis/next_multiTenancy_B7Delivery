@@ -6,6 +6,7 @@ import SearchInput from "../../components/SearchInput";
 import { useAppContext } from "../../contexts/AppContext";
 import { useApi } from "../../libs/useApi";
 import styles from "../../styles/Home.module.css";
+import { Product } from "../../types/Product";
 import { Tenant } from "../../types/Tenant";
 
 const Home = ( data: Props) => {
@@ -43,16 +44,9 @@ const Home = ( data: Props) => {
       <Banner />
 
       <div className={styles.grid}>
-        <ProductItem
-          data={{
-            id: 0,
-            image: "/temp/burguer.png",
-            categoryName: "Tradicional",
-            name: "Texas Burguer",
-            price: "25,90",
-          }}
-          
-        />
+        {data.products.map((product, index) => (
+          <ProductItem data={product} key={index} />
+        ))}
       </div>
     </div>
   );
@@ -61,15 +55,16 @@ const Home = ( data: Props) => {
 export default Home;
 
 type Props = {
-  tenant: Tenant
+  tenant: Tenant;
+  products: Product[];
 };
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { tenant: tenantSlug } = context.query;
-  const api = useApi();
+  const api = useApi(tenantSlug as string);
 
-  const tenant = await api.getTenant(tenantSlug as string);
+  const tenant = await api.getTenant();
 
   if (!tenant) {
     return {
@@ -80,9 +75,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
+  const products = await api.getAllProducts();
+
   return {
     props: {
       tenant,
+      products
     },
   };
 };
