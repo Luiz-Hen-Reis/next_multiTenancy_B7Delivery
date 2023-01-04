@@ -1,16 +1,18 @@
 import { GetServerSideProps } from "next";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Banner from "../../components/Banner";
 import ProductItem from "../../components/ProductItem";
 import SearchInput from "../../components/SearchInput";
-import { useAppContext } from "../../contexts/AppContext";
+import Sidebar from "../../components/Sidebar";
+import { useAppContext } from "../../contexts/app";
 import { useApi } from "../../libs/useApi";
 import styles from "../../styles/Home.module.css";
 import { Product } from "../../types/Product";
 import { Tenant } from "../../types/Tenant";
 
-const Home = ( data: Props) => {
+const Home = (data: Props) => {
   const { tenant, setTenant } = useAppContext();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     setTenant(data.tenant);
@@ -29,11 +31,25 @@ const Home = ( data: Props) => {
             <div className={styles.headerSubTitle}>O que deseja pra hoje?</div>
           </div>
           <div className={styles.headerTopRight}>
-            <div className={styles.menuButton}>
-              <div className={styles.menuButtonLine} style={{ backgroundColor: tenant?.mainColor }}></div>
-              <div className={styles.menuButtonLine} style={{ backgroundColor: tenant?.mainColor }}></div>
-              <div className={styles.menuButtonLine} style={{ backgroundColor: tenant?.mainColor }}></div>
+            <div className={styles.menuButton} onClick={() => setSidebarOpen(true)}>
+              <div
+                className={styles.menuButtonLine}
+                style={{ backgroundColor: tenant?.mainColor }}
+              ></div>
+              <div
+                className={styles.menuButtonLine}
+                style={{ backgroundColor: tenant?.mainColor }}
+              ></div>
+              <div
+                className={styles.menuButtonLine}
+                style={{ backgroundColor: tenant?.mainColor }}
+              ></div>
             </div>
+            <Sidebar
+              tenant={data.tenant}
+              onClose={() => setSidebarOpen(false)}
+              open={sidebarOpen}
+            />
           </div>
         </div>
         <div className={styles.headerBottom}>
@@ -59,7 +75,6 @@ type Props = {
   products: Product[];
 };
 
-
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { tenant: tenantSlug } = context.query;
   const api = useApi(tenantSlug as string);
@@ -80,7 +95,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       tenant,
-      products
+      products,
     },
   };
 };

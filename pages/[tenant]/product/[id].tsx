@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next";
 import { use, useEffect, useState } from "react";
-import { useAppContext } from "../../../contexts/AppContext";
+import { useAppContext } from "../../../contexts/app";
 import { useApi } from "../../../libs/useApi";
 import { Product } from "../../../types/Product";
 import { Tenant } from "../../../types/Tenant";
